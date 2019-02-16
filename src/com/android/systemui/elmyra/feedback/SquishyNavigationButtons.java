@@ -2,6 +2,7 @@ package com.google.android.systemui.elmyra.feedback;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.PowerManager;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.View;
@@ -22,6 +23,7 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
     private final SquishyViewController mViewController;
 
     private ContentResolver resolver;
+    private PowerManager pm;
 
     public SquishyNavigationButtons(Context context) {
         super(context);
@@ -29,6 +31,7 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
         mViewController = new SquishyViewController(context);
         mKeyguardViewMediator = (KeyguardViewMediator) SysUiServiceProvider.getComponent(
             context, KeyguardViewMediator.class);
+        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
 
     protected List<FeedbackEffect> findFeedbackEffects(Navigator navigationBarView) {
@@ -47,7 +50,7 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
 
     @Override
     protected boolean isActiveFeedbackEffect(FeedbackEffect feedbackEffect) {
-        return !isSqueezeTurnedOff() && !mKeyguardViewMediator.isShowingAndNotOccluded();
+        return  !pm.isPowerSaveMode() && !isSqueezeTurnedOff() && !mKeyguardViewMediator.isShowingAndNotOccluded();
     }
 
     @Override
