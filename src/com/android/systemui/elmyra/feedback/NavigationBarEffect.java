@@ -1,6 +1,11 @@
 package com.google.android.systemui.elmyra.feedback;
 
+import static android.provider.Settings.Secure.NAVIGATION_BAR_MODE;
+
 import android.content.Context;
+import android.os.UserHandle;
+import android.provider.Settings;
+import android.content.ContentResolver;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.navigation.Navigator;
 import com.android.systemui.statusbar.phone.NavigationBarView;
@@ -22,7 +27,7 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
         Navigator navigationBarView;
         if (statusBar != null) {
             navigationBarView = statusBar.getNavigationBarView();
-            if (navigationBarView == null || navigationBarView.isFullGestureMode()) {
+            if (navigationBarView == null || navigationBarView.isFullGestureMode() || !isUsingStockNav()) {
                 mFeedbackEffects.clear();
                 return;
             }
@@ -92,4 +97,9 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
     }
 
     protected abstract boolean validateFeedbackEffects(List<FeedbackEffect> list);
+
+    private boolean isUsingStockNav() {
+        return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+               Settings.Secure.NAVIGATION_BAR_MODE, 0, UserHandle.USER_CURRENT) == 0;
+    }
 }
