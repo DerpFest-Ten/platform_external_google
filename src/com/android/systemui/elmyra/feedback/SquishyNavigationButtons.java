@@ -6,6 +6,8 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.View;
 
+import com.android.internal.utils.ActionHandler;
+import com.android.internal.utils.Config.ActionConfig;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.navigation.Navigator;
@@ -45,13 +47,20 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
 
     @Override
     protected boolean isActiveFeedbackEffect(FeedbackEffect feedbackEffect) {
-        boolean squeezeSelection = Settings.Secure.getIntForUser(resolver,
-                Settings.Secure.SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
-        return !squeezeSelection && !mKeyguardViewMediator.isShowingAndNotOccluded();
+        return !isSqueezeTurnedOff() && !mKeyguardViewMediator.isShowingAndNotOccluded();
     }
 
     @Override
     protected boolean validateFeedbackEffects(List<FeedbackEffect> list) {
         return mViewController.isAttachedToWindow();
     }
+
+    private boolean isSqueezeTurnedOff() {
+        String actionConfig = Settings.Secure.getStringForUser(resolver,
+                Settings.Secure.SQUEEZE_SELECTION_SMART_ACTIONS, UserHandle.USER_CURRENT);
+        String action = ActionConfig.getActionFromDelimitedString(getContext(), actionConfig,
+                ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+        return action.equals(ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+    }
+
 }

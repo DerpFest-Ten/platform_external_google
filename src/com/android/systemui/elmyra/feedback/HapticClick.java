@@ -9,6 +9,8 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 
+import com.android.internal.utils.ActionHandler;
+import com.android.internal.utils.Config.ActionConfig;
 import com.google.android.systemui.elmyra.sensors.GestureSensor.DetectionProperties;
 
 public class HapticClick implements FeedbackEffect {
@@ -18,18 +20,25 @@ public class HapticClick implements FeedbackEffect {
     private final VibrationEffect mResolveVibrationEffect = VibrationEffect.get(0);
     private final Vibrator mVibrator;
     private ContentResolver resolver;
+    private Context mContext;
 
     public HapticClick(Context context) {
+        mContext = context;
         resolver = context.getContentResolver();
         mVibrator = (Vibrator) context.getSystemService("vibrator");
     }
 
+    private boolean isSqueezeTurnedOff() {
+        String actionConfig = Settings.Secure.getStringForUser(resolver,
+                Settings.Secure.SQUEEZE_SELECTION_SMART_ACTIONS, UserHandle.USER_CURRENT);
+        String action = ActionConfig.getActionFromDelimitedString(mContext, actionConfig,
+                ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+        return action.equals(ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+    }
+
     @Override
     public void onProgress(float f, int i) {
-        boolean squeezeSelection = Settings.Secure.getIntForUser(resolver,
-                Settings.Secure.SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
-
-        if (squeezeSelection) {
+        if (isSqueezeTurnedOff()) {
             return;
         }
         if (!(mLastGestureStage == 2 || i != 2 || mVibrator == null)) {
@@ -43,10 +52,7 @@ public class HapticClick implements FeedbackEffect {
     }
 
     public void onResolve(DetectionProperties detectionProperties) {
-        boolean squeezeSelection = Settings.Secure.getIntForUser(resolver,
-                Settings.Secure.SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
-
-        if (squeezeSelection) {
+        if (isSqueezeTurnedOff()) {
             return;
         }
         if ((detectionProperties == null || !detectionProperties.isHapticConsumed()) && mVibrator != null) {

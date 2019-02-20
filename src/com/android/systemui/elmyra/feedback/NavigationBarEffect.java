@@ -49,6 +49,10 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
         return true;
     }
 
+    protected Context getContext() {
+        return mContext;
+    }
+
     @Override
 	public void onProgress(float f, int i) {
         refreshFeedbackEffects();
