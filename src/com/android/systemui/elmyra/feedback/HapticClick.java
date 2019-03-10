@@ -33,7 +33,12 @@ public class HapticClick implements FeedbackEffect {
                 Settings.Secure.SQUEEZE_SELECTION_SMART_ACTIONS, UserHandle.USER_CURRENT);
         String action = ActionConfig.getActionFromDelimitedString(mContext, actionConfig,
                 ActionHandler.SYSTEMUI_TASK_NO_ACTION);
-        return action.equals(ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+        String longActionConfig = Settings.Secure.getStringForUser(resolver,
+                Settings.Secure.LONG_SQUEEZE_SELECTION_SMART_ACTIONS, UserHandle.USER_CURRENT);
+        String longAction = ActionConfig.getActionFromDelimitedString(mContext, longActionConfig,
+                ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+        return action.equals(ActionHandler.SYSTEMUI_TASK_NO_ACTION)
+                && longAction.equals(ActionHandler.SYSTEMUI_TASK_NO_ACTION);
     }
 
     @Override

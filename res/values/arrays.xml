@@ -16,8 +16,8 @@
         <item>46</item>
     </integer-array>
     <integer-array name="elmyra_time_window">
-        <item>1000</item>
-        <item>1000</item>
+        <item>2000</item>
+        <item>2000</item>
     </integer-array>
     <integer-array name="elmyra_upper_threshold">
         <item>4000</item>
