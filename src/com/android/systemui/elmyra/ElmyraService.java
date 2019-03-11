@@ -2,10 +2,21 @@ package com.google.android.systemui.elmyra;
 
 import android.content.Context;
 import android.metrics.LogMaker;
+import android.os.Handler;
 import android.os.PowerManager;
+import android.os.Process;
 import android.os.PowerManager.WakeLock;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.os.SystemClock;
+import android.os.UserHandle;
+
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.utils.ActionHandler;
+import com.android.internal.utils.ActionUtils;
+import com.android.internal.utils.SmartPackageMonitor;
+import com.android.internal.utils.Config.ActionConfig;
+import com.android.internal.utils.SmartPackageMonitor.PackageState;
 import com.google.android.systemui.elmyra.actions.Action;
 import com.google.android.systemui.elmyra.actions.Action.Listener;
 import com.google.android.systemui.elmyra.feedback.FeedbackEffect;
@@ -33,6 +44,61 @@ public class ElmyraService {
     private final MetricsLogger mLogger;
     private final PowerManager mPowerManager;
     private final WakeLock mWakeLock;
+    private final SmartPackageMonitor mPackageMonitor = new SmartPackageMonitor();
+
+    private SmartPackageMonitor.PackageChangedListener mPackageListener = new SmartPackageMonitor.PackageChangedListener() {
+        @Override
+        public void onPackageChanged(String pkg, PackageState state) {
+            if (state == PackageState.PACKAGE_REMOVED
+                    || state == PackageState.PACKAGE_CHANGED) {
+                final Context ctx = mContext;
+                final Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                String shortConfig = Settings.Secure.getStringForUser(ctx.getContentResolver(),
+                        Settings.Secure.SQUEEZE_SELECTION_SMART_ACTIONS, UserHandle.USER_CURRENT);
+                String shortAction = ActionConfig.getActionFromDelimitedString(ctx, shortConfig,
+                        ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+                String longConfig = Settings.Secure.getStringForUser(ctx.getContentResolver(),
+                        Settings.Secure.LONG_SQUEEZE_SELECTION_SMART_ACTIONS, UserHandle.USER_CURRENT);
+                String longAction = ActionConfig.getActionFromDelimitedString(ctx, longConfig,
+                        ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+                if (!shortAction.startsWith(ActionHandler.SYSTEM_PREFIX)) {
+                    if (intentActionNeedsClearing(ctx, shortAction)) {
+                        ActionConfig shortActionConfig = new ActionConfig(ctx,
+                                ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+                        Settings.Secure.putStringForUser(ctx.getContentResolver(),
+                                Settings.Secure.SQUEEZE_SELECTION_SMART_ACTIONS,
+                                shortActionConfig.toDelimitedString(), UserHandle.USER_CURRENT);
+                    }
+                }
+                if (!longAction.startsWith(ActionHandler.SYSTEM_PREFIX)) {
+                    if (intentActionNeedsClearing(ctx, longAction)) {
+                        ActionConfig longActionConfig = new ActionConfig(ctx,
+                                ActionHandler.SYSTEMUI_TASK_NO_ACTION);
+                        Settings.Secure.putStringForUser(ctx.getContentResolver(),
+                                Settings.Secure.LONG_SQUEEZE_SELECTION_SMART_ACTIONS,
+                                longActionConfig.toDelimitedString(), UserHandle.USER_CURRENT);
+                    }
+                }
+                    }
+                });
+                thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                thread.start();
+            }
+        }
+    };
+
+    private static boolean intentActionNeedsClearing(Context ctx, String action) {
+        if (action.startsWith(ActionHandler.SYSTEM_PREFIX)) {
+            return false;
+        }
+        String resolvedName = ActionUtils.getFriendlyNameForUri(ctx, action);
+        if (resolvedName == null || TextUtils.equals(resolvedName, action)) {
+            return true;
+        }
+        return false;
+    }
 
     /* renamed from: com.google.android.systemui.elmyra.ElmyraService$1 */
     class C15821 implements Listener {
@@ -116,6 +182,8 @@ public class ElmyraService {
             mGestureSensor.setGestureListener(mGestureListener);
         }
         updateSensorListener();
+        mPackageMonitor.register(mContext, new Handler());
+        mPackageMonitor.addListener(mPackageListener);
     }
 
     private Gate getBlockingGate() {
