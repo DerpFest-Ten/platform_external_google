@@ -7,7 +7,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.UserHandle;
 import android.provider.Settings;
-import com.android.internal.util.aosip.aosipUtils;
+import com.android.internal.util.derp.derpUtils;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.VendorServices;
 import com.android.systemui.R;
@@ -39,7 +39,7 @@ public class GoogleServices extends VendorServices {
                 // Get packageName from Uri
                 String packageName = intent.getData().getSchemeSpecificPart();
                 // If the package is still installed
-                if (aosipUtils.isPackageInstalled(context, packageName)) {
+                if (derpUtils.isPackageInstalled(context, packageName)) {
                     // it's an application update, we can skip the rest.
                     return;
                 }

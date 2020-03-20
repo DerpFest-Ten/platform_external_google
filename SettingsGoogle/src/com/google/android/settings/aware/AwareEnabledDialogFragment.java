@@ -39,6 +39,6 @@ public class AwareEnabledDialogFragment extends InstrumentedDialogFragment {
     }
 
     public int getMetricsCategory() {
-        return MetricsProto.MetricsEvent.OWLSNEST;
+        return MetricsProto.MetricsEvent.DERP;
     }
 }

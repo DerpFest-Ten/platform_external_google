@@ -15,7 +15,7 @@ public class AwareSettingsDialogFragment extends InstrumentedDialogFragment {
     private static DialogInterface.OnClickListener mClickListener;
 
     public int getMetricsCategory() {
-        return MetricsProto.MetricsEvent.OWLSNEST;
+        return MetricsProto.MetricsEvent.DERP;
     }
 
     public static void show(Fragment fragment, DialogInterface.OnClickListener onClickListener) {

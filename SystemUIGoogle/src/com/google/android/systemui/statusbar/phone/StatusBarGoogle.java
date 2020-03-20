@@ -1,7 +1,7 @@
 package com.google.android.systemui.statusbar.phone;
 
 import android.widget.ImageView;
-import com.android.internal.util.aosip.aosipUtils;
+import com.android.internal.util.derp.derpUtils;
 import com.android.systemui.R;
 import com.android.systemui.Dependency;
 import com.android.systemui.dock.DockManager;
@@ -32,10 +32,10 @@ public class StatusBarGoogle extends StatusBar {
     }
 
     private void enableOsloPlugin() {
-        if (aosipUtils.isPackageInstalled(mContext, "com.google.oslo")) {
-            aosipUtils.setComponentState(mContext, "com.google.oslo", "com.google.oslo.OsloOverlay", true);
-            aosipUtils.setComponentState(mContext, "com.google.oslo", "com.google.oslo.OsloSensorManager", true);
-            aosipUtils.setComponentState(mContext, "com.google.oslo", "com.google.oslo.service.OsloService", true);
+        if (derpUtils.isPackageInstalled(mContext, "com.google.oslo")) {
+            derpUtils.setComponentState(mContext, "com.google.oslo", "com.google.oslo.OsloOverlay", true);
+            derpUtils.setComponentState(mContext, "com.google.oslo", "com.google.oslo.OsloSensorManager", true);
+            derpUtils.setComponentState(mContext, "com.google.oslo", "com.google.oslo.service.OsloService", true);
         }
     }
 }

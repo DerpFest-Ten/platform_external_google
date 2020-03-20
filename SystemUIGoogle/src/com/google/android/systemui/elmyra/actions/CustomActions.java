@@ -10,7 +10,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import com.android.internal.util.aosip.aosipUtils;
+import com.android.internal.util.derp.derpUtils;
 import com.android.systemui.Dependency;
 import com.android.systemui.assist.AssistManager;
 
@@ -46,20 +46,20 @@ public class CustomActions extends Action {
             default:
                 break;
             case 1: // Assistant
-                aosipUtils.switchScreenOn(getContext());
+                derpUtils.switchScreenOn(getContext());
                 mAssistManager.startAssist(new Bundle() /* args */);
                 break;
             case 2: // Voice search
                 if (isScreenOn) {
-                    aosipUtils.launchVoiceSearch(getContext());
+                    derpUtils.launchVoiceSearch(getContext());
                 }
                 break;
             case 3: // Camera
-                aosipUtils.switchScreenOn(getContext());
-                aosipUtils.launchCamera(getContext());
+                derpUtils.switchScreenOn(getContext());
+                derpUtils.launchCamera(getContext());
                 break;
             case 4: // Flashlight
-                aosipUtils.toggleCameraFlash();
+                derpUtils.toggleCameraFlash();
                 break;
             case 5: // Application
                 if (isScreenOn) {
@@ -68,38 +68,38 @@ public class CustomActions extends Action {
                 break;
             case 6: // Volume panel
                 if (isScreenOn) {
-                    aosipUtils.toggleVolumePanel(getContext());
+                    derpUtils.toggleVolumePanel(getContext());
                 }
                 break;
             case 7: // Screen off
                 if (isScreenOn) {
-                    aosipUtils.switchScreenOff(getContext());
+                    derpUtils.switchScreenOff(getContext());
                 }
                 break;
             case 8: // Screenshot
                 if (isScreenOn) {
-                    aosipUtils.takeScreenshot(true);
+                    derpUtils.takeScreenshot(true);
                 }
                 break;
             case 9: // Notification panel
                 if (isScreenOn) {
-                    aosipUtils.toggleNotifications();
+                    derpUtils.toggleNotifications();
                 }
                 break;
             case 10: // QS panel
                 if (isScreenOn) {
-                    aosipUtils.toggleQsPanel();
+                    derpUtils.toggleQsPanel();
                 }
                 break;
             case 11: // Clear notifications
-                aosipUtils.clearAllNotifications();
+                derpUtils.clearAllNotifications();
                 break;
             case 12: // Ringer modes
-                aosipUtils.toggleRingerModes(getContext());
+                derpUtils.toggleRingerModes(getContext());
                 break;
             case 13: // Kill app
                 if (isScreenOn) {
-                    aosipUtils.killForegroundApp();
+                    derpUtils.killForegroundApp();
                 }
                 break;
         }

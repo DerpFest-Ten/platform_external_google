@@ -90,7 +90,7 @@ public class AwareDisplaySettings extends RadioButtonPickerFragment {
     }
 
     public int getMetricsCategory() {
-        return MetricsProto.MetricsEvent.OWLSNEST;
+        return MetricsProto.MetricsEvent.DERP;
     }
 
     @Override

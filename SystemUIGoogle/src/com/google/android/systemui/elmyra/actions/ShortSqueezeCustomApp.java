@@ -6,8 +6,8 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.ListView;
 
-import com.aosip.support.R;
-import com.aosip.support.preference.AppPicker;
+import com.derp.support.R;
+import com.derp.support.preference.AppPicker;
 
 public class ShortSqueezeCustomApp extends AppPicker {
 
