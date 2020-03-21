@@ -9,6 +9,7 @@ import android.os.UserHandle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 
 import com.android.internal.util.aosip.aosipUtils;
 import com.android.systemui.Dependency;
@@ -101,6 +102,12 @@ public class CustomActions extends Action {
                 if (isScreenOn) {
                     aosipUtils.killForegroundApp();
                 }
+                break;
+            case 14: // Skip song
+                aosipUtils.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_NEXT);
+                break;
+            case 15: // Previous song
+                aosipUtils.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
                 break;
         }
     }
